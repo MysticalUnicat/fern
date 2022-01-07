@@ -109,7 +109,6 @@ typedef struct {
   uint32_t imm;
   uint32_t body;
 } fern_BQN_bytecode_block;
-
 typedef struct {
   uint32_t bytecode_size;
   uint8_t * bytecode;
@@ -122,3 +121,51 @@ typedef struct {
 } fern_BQN;
 
 fern_BQN_ExecutionResult fern_BQN_execute(fern_BQN * bqn, uint32_t p, fern_Namespace e, fern_Box * result);
+
+typedef uint32_t fern_BQN_File_Bytecode;
+typedef struct {
+  enum {
+      fern_BQN_File_Constant_runtime
+    , fern_BQN_File_Constant_runtime_0
+    , fern_BQN_File_Constant_provide
+    , fern_BQN_File_Constant_character
+    , fern_BQN_File_Constant_string
+    , fern_BQN_File_Constant_number
+  } type;
+  uint32_t index;
+  union {
+    uint32_t runtime;
+    uint32_t runtime_0;
+    uint32_t provide;
+    uint32_t character;
+    const char * string;
+    double number;
+  };
+} fern_BQN_File_Constant;
+
+typedef struct {
+  uint32_t type;
+  uint32_t imm;
+  uint32_t * bodies;
+  uint32_t num_bodies;
+} fern_BQN_File_Block;
+
+typedef struct {
+  uint32_t start;
+  uint32_t vars;
+} fern_BQN_File_Body;
+
+typedef struct {
+  const fern_BQN_File_Bytecode * bytecode;
+  uint32_t bytecode_size;
+  
+  const fern_BQN_File_Constant * constants;
+  uint32_t constants_size;
+
+  const fern_BQN_File_Block * blocks;
+  uint32_t blocks_size;
+
+  const fern_BQN_File_Body * bodies;
+  uint32_t bodies_size;
+} fern_BQN_File;
+

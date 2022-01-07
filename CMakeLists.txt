@@ -30,7 +30,7 @@ function(fern_compile_bqn module)
 
   add_custom_command(
     OUTPUT ${OUTPUT}
-    COMMAND bqn ${CMAKE_CURRENT_SOURCE_DIR}/tool/cf.bqn ${FERN_BQN_PATH} ${module} > ${OUTPUT}
+    COMMAND env bqn ${CMAKE_CURRENT_SOURCE_DIR}/tool/cf.bqn ${FERN_BQN_PATH} ${module} > ${OUTPUT}
     MAIN_DEPENDENCY tool/cf.bqn
   )
 endfunction()
@@ -52,7 +52,7 @@ add_library(fernrt
 )
 target_include_directories(fernrt
   PUBLIC include
-  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+  PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 target_compile_definitions(fernrt PRIVATE FERN_BQN_NAMES=$<JOIN:FERN_BQN_NAMES,$<COMMA>>)
 target_compile_options(fernrt PUBLIC -Wall -Werror -std=c11)
