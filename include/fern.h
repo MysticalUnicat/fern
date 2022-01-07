@@ -164,12 +164,12 @@ typedef struct fern_Modifier1 {
   union {
     fern_Modifier1Evokation c;
     struct {
-      fern_Box f;
-      fern_Modifier2Evokation m;
+      fern_Box m;
+      fern_Box g;
     } partial_m2;
     struct {
-      fern_Box f;
-      fern_Box m;
+      fern_Modifier2Evokation m;
+      fern_Box g;
     } partial_c_m2;
   };
 } *fern_Modifier1;
@@ -455,7 +455,7 @@ static inline uint32_t fern_array_rank(fern_ArrayReader reader) {
   return reader.shape.size;
 }
 
-static inline uint32_t fern_array_shape(fern_ArrayReader reader, uint32_t axis) {
+static inline uint32_t fern_array_axis_length(fern_ArrayReader reader, uint32_t axis) {
   fern_assert_fatal_error(axis < reader.shape.size, "out of bounds error");
   switch(reader.shape.format) {
   case fern_Format_natural_8_bit:  return reader.shape.natural_8_bit[axis];
@@ -468,7 +468,7 @@ static inline uint32_t fern_array_shape(fern_ArrayReader reader, uint32_t axis) 
 static inline uint32_t fern_array_num_cells(fern_ArrayReader reader) {
   uint32_t result = 1;
   for(uint32_t i = 0; i < fern_array_rank(reader); i++) {
-    result *= fern_array_shape(reader, i);
+    result *= fern_array_axis_length(reader, i);
   }
   return result;
 }

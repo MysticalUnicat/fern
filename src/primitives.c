@@ -176,7 +176,7 @@ fern_Box fern_provide__fill_by_(void) {
 }
 
 // + ----------------------------------------------------------------------------------------------------------------------------------------------------------
-// '𝕩 +' returns itself (complex numbers do different things)
+// '𝕩 +' returns itself (compound numbers do different things)
 // 'number + number' add two numbers
 // 'character + number' returns a character
 static fern_Box fern_PLUS_SIGN_evokation0(fern_Evokation evokation, fern_Box x, fern_Box w) {
@@ -530,7 +530,7 @@ static fern_Box fern_NOT_EQUAL_SIGN_evokation0(fern_Evokation evokation, fern_Bo
   case fern_Evokation_dyad:
     if(fern_is_array(x)) {
       fern_Array xa = fern_unpack_array(x);
-      return fern_pack_number(fern_array_shape(fern_read_array(xa), 0));
+      return fern_pack_number(fern_array_axis_length(fern_read_array(xa), 0));
     } else {
       return fern_DIGIT_ONE();
     }
@@ -562,7 +562,7 @@ static fern_Box fern_NOT_IDENTICAL_TO_evokation0(fern_Evokation evokation, fern_
       union fern_Data cells;
       uint32_t * nums = fern_init_data(&cells, fern_Format_natural_32_bit, shape);
       for(uint32_t i = 0; i < shape; i++) {
-        *nums = fern_array_shape(src_array_read, i);
+        *nums = fern_array_axis_length(src_array_read, i);
       }
 
       return fern_mk_array2(1, &shape, &cells, fern_DIGIT_ZERO());
@@ -870,10 +870,10 @@ static fern_Box fern_TOP_LEFT_CORNER_evokation0(fern_Evokation evokation, fern_B
       size_t new_rank = fern_array_rank(war) + fern_array_rank(xar);
       uint32_t * shape = malloc(sizeof(*shape) * new_rank);
       for(uint32_t i = 0; i < fern_array_rank(war); i++) {
-        shape[i] = fern_array_shape(war, i);
+        shape[i] = fern_array_axis_length(war, i);
       }
       for(uint32_t i = fern_array_rank(war), j = 0; j < fern_array_rank(xar); i++, j++) {
-        shape[i] = fern_array_shape(xar, j);
+        shape[i] = fern_array_axis_length(xar, j);
       }
 
       fern_Box result = fern_mk_array2(new_rank, shape, &data, fern_DIGIT_ZERO());
@@ -932,7 +932,7 @@ static fern_Box fern_GRAVE_ACCENT_evokation0(fern_Evokation evokation, fern_Box 
       fern_ArrayReader war = fern_read_array(wa);
 
       for(uint32_t i = 0; i < fern_array_rank(war); i++) {
-        if(fern_array_shape(war, i) != fern_array_shape(xar, i + 1)) {
+        if(fern_array_axis_length(war, i) != fern_array_axis_length(xar, i + 1)) {
           fern_fatal_error("`: shape of 𝕨 must be cell shape of 𝕩");
         }
       }
@@ -953,7 +953,7 @@ static fern_Box fern_GRAVE_ACCENT_evokation0(fern_Evokation evokation, fern_Box 
 
   uint32_t c = 1;
   for(uint32_t i = 1; i < fern_array_rank(xar); i++) {
-    c *= fern_array_shape(xar, i);
+    c *= fern_array_axis_length(xar, i);
   }
 
   uint32_t i;

@@ -81,6 +81,9 @@ train_expression ::= evocable evocable evocable.
 function ::= FUNCTION_IDENTIFIER.
 function ::= FUNCTION_LITERAL.
 function ::= PERIOD VALUE_IDENTIFIER.
+// a function with this behaviour:
+// 'atom .id'     -> read
+// 'atom .id any' -> write
 
 modifier1 ::= MODIFIER1_IDENTIFIER.
 modifier1 ::= MODIFIER1_LITERAL.
@@ -400,21 +403,11 @@ whitespace:
   if(!lexer->c1.character) {
     return false;
   }
-  if(lexer->c1.character == '/' && lexer->c2.character == '/') {
+  if(lexer->c1.character == '#') {
     newline = true;
     while(lexer->c1.character && lexer->c1.character != '\n') {
       _Lexer_update_c(lexer);
     }
-    goto whitespace;
-  }
-  if(lexer->c1.character == '/' && lexer->c2.character == '*') {
-    _Lexer_update_c(lexer);
-    _Lexer_update_c(lexer);
-    while(lexer->c1.character != '*' || lexer->c2.character != '/') {
-      _Lexer_update_c(lexer);
-    }
-    _Lexer_update_c(lexer);
-    _Lexer_update_c(lexer);
     goto whitespace;
   }
   if(lexer->c1.position > token->position) {

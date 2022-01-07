@@ -84,24 +84,41 @@ void fern_internal_throw(fern_Box message);
 
 fern_Box fern_internal_tofill(fern_Box x);
 
+bool fern_internal_match_shape(fern_Array x, fern_Array w);
+bool fern_internal_match_full(fern_Box x, fern_Box w);
+static inline bool fern_internal_match(fern_Box x, fern_Box w) {
+  if(x.bits == w.bits) {
+    return true;
+  }
+  if(fern_tag(x) != fern_tag(w)) {
+    return false;
+  }
+  return fern_internal_match_full(x, w);
+}
+
 // ============================================================================================================================================================
 // BQN vm
+typedef enum {
+    fern_BQN_ExecutionResult_success
+  , fern_BQN_ExecutionResult_return
+  , fern_BQN_ExecutionResult_error
+} fern_BQN_ExecutionResult;
+
 typedef struct {
-  uint32_t t;
-  uint32_t i;
-  uint32_t st;
-  uint32_t l;
+  uint32_t type;
+  uint32_t imm;
+  uint32_t body;
 } fern_BQN_bytecode_block;
 
 typedef struct {
   uint32_t bytecode_size;
   uint8_t * bytecode;
 
-  uint32_t num_objects;
-  fern_Box * objects;
+  uint32_t num_consts;
+  fern_Box * consts;
 
   uint32_t num_blocks;
   fern_BQN_bytecode_block * blocks;
 } fern_BQN;
 
-fern_Box fern_BQN_execute(fern_BQN * bqn, uint32_t p, fern_Namespace * e);
+fern_BQN_ExecutionResult fern_BQN_execute(fern_BQN * bqn, uint32_t p, fern_Namespace e, fern_Box * result);
